@@ -66,10 +66,8 @@ try:
         data = manager.read()
 
         if data:
-            print("Получено:")
-            print("RAW:", data)
-            print("HEX:", data.hex(' '))
-            print("LEN:", len(data))
+            print(data.hex(' '))
+
 
         time.sleep(0.01)
 

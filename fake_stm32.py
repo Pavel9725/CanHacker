@@ -1,28 +1,26 @@
 import serial
 import time
+from can_protocol import CANFrame, build_packet
 
 
 PORT = "COM7"
 BAUDRATE = 115200
 
-can_id = 0x7E8
-packet = bytes([
-    0xAA,       # header
+frame = CANFrame(
+    0x7E8,
+    bytes([
+        0x11,
+        0x22,
+        0x33,
+        0x44,
+        0x55,
+        0x66,
+        0x77,
+        0x88
+    ])
+)
 
-   *can_id.to_bytes(2, byteorder='big'),
-
-    0x08,       # DLC
-
-    0x11,
-    0x22,
-    0x33,
-    0x44,
-    0x55,
-    0x66,
-    0x77,
-    0x88
-])
-
+packet = build_packet(frame)
 
 
 ser = serial.Serial(
