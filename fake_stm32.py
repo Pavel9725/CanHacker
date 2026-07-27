@@ -5,6 +5,25 @@ import time
 PORT = "COM7"
 BAUDRATE = 115200
 
+can_id = 0x7E8
+packet = bytes([
+    0xAA,       # header
+
+   *can_id.to_bytes(2, byteorder='big'),
+
+    0x08,       # DLC
+
+    0x11,
+    0x22,
+    0x33,
+    0x44,
+    0x55,
+    0x66,
+    0x77,
+    0x88
+])
+
+
 
 ser = serial.Serial(
     port=PORT,
@@ -38,8 +57,8 @@ while True:
     # Периодическая отправка данных
     counter += 1
 
-    if counter >= 500:
-        ser.write(b"CAN:0x7E8:8:0509000024230000")
+    if counter >= 1000:
+        ser.write(packet)
         counter = 0
 
 

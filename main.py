@@ -67,7 +67,9 @@ try:
 
         if data:
             print("Получено:")
-            print(data)
+            print("RAW:", data)
+            print("HEX:", data.hex(' '))
+            print("LEN:", len(data))
 
         time.sleep(0.01)
 
