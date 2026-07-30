@@ -1,3 +1,6 @@
+from crc import crc8_sae_j1850
+
+
 class CANFrame:
 
     def __init__(self, can_id: int, data: bytes):
@@ -6,17 +9,11 @@ class CANFrame:
         self.dlc = len(data)
 
 
-    def __str__(self):
-        return (
-            f"CAN ID: 0x{self.can_id:X}, "
-            f"DLC: {self.dlc}, "
-            f"DATA: {self.data.hex(' ')}"
-        )
-
 def build_packet(frame: CANFrame) -> bytes:
         packet = bytearray()
 
-        packet.append(0xAA)
+        #packet.append(0x55)
+        #acket.append(0xAA)
 
         packet.extend(frame.can_id.to_bytes(2, byteorder='big'))
 
@@ -24,20 +21,11 @@ def build_packet(frame: CANFrame) -> bytes:
 
         packet.extend(frame.data)
 
+        crc_data = packet[2:]
+
+        crc = crc8_sae_j1850(crc_data)
+
+        packet.append(crc)
+
         return bytes(packet)
 
-frame = CANFrame(
-    0x7E8,
-    bytes([
-        0x11,
-        0x22,
-        0x33,
-        0x44,
-        0x55,
-        0x66,
-        0x77,
-        0x88
-    ])
-)
-
-packet = build_packet(frame)

@@ -1,6 +1,6 @@
 import serial
 import time
-from can_protocol import CANFrame, build_packet
+from can_frame import CANFrame, build_packet
 
 
 PORT = "COM7"
