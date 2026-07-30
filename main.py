@@ -1,12 +1,13 @@
 from can_logger import CANLogger
 from serial_manager import SerialManager
 from can_parser import CANParser
-import time
+from can_database import CANDatabase
 
 
 manager = SerialManager()
 parser = CANParser()
 logger = CANLogger()
+database = CANDatabase()
 
 ports = manager.get_ports()
 
@@ -72,23 +73,28 @@ try:
 
         data = manager.read()
 
-
         if data:
 
-            # сырые данные UART
-            print("RX:", data.hex(' '))
-
-
-            # передаём в CANParser
             frames = parser.feed(data)
 
-
-            # обработанные CAN кадры
             for frame in frames:
+                database.update(frame)
                 logger.log(frame)
 
+            print("\n--- CAN DATABASE ---")
 
-        time.sleep(0.01)
+            for item in database.get_all():
+                frame = item["frame"]
+
+                print(
+                    f"0x{frame.can_id:X} "
+                    f"{frame.data.hex(' ')} "
+                    f"count={item['count']}"
+                )
+
+
+
+
 
 
 
