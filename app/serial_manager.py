@@ -65,7 +65,7 @@ class SerialManager:
 
         self._port = None
         self._baudrate = None
-        self._timeout = 0
+        self._timeout = 1
 
         self._bytesize = serial.EIGHTBITS
         self._parity = serial.PARITY_NONE
