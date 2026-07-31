@@ -2,34 +2,49 @@ import time
 
 
 class CANDatabase:
+    """
+        Класс для хранения и отслеживания CAN-сообщений.
+
+        Хранит информацию о каждом уникальном CAN ID:
+        - Сам кадр (последние полученные данные)
+        - Количество полученных сообщений
+        - Время первого и последнего получения
+    """
 
     def __init__(self):
         self.frames = {}
 
 
     def update(self, frame):
+        """
+                Обновляет базу данных новым CAN-фреймом.
 
-        can_id = frame.can_id
+                Если фрейм с таким ID встречается впервые - создается новая запись.
+                Если ID уже существует - обновляются данные и счетчик увеличивается.
+        """
 
+        can_id = frame.can_id               # Извлекаем идентификатор CAN-сообщения
+
+        # Проверяем, существует ли уже запись с таким ID
         if can_id not in self.frames:
 
+            # Если ID новый - создаем новую запись
             self.frames[can_id] = {
-                "frame": frame,
-                "count": 1,
-                "first_seen": time.time(),
-                "last_seen": time.time()
+                "frame": frame,                 # Сохраняем сам кадр
+                "count": 1,                     # Устанавливаем счетчик в 1 (первое получение)
+                "first_seen": time.time(),      # Запоминаем время первого получения
+                "last_seen": time.time()        # Время последнего получения (пока равно first_seen)
             }
 
         else:
+            # Если ID уже существует - обновляем существующую запись
+            item = self.frames[can_id]          # Получаем существующую запись по ID
 
-            item = self.frames[can_id]
-
-            item["frame"] = frame
-            item["count"] += 1
-            item["last_seen"] = time.time()
-
+            item["frame"] = frame               # Обновляем данные фрейма (заменяем на новые)
+            item["count"] += 1                  # Увеличиваем счетчик получений на 1
+            item["last_seen"] = time.time()     # Обновляем время последнего получения
 
 
     def get_all(self):
-
+        # Возвращаем все значения словаря (без ключей-идентификаторов)
         return self.frames.values()
