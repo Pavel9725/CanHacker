@@ -20,6 +20,10 @@ class CANLogger:
         self.history = {}
 
 
+    def handle_frame(self, frame):
+        self.log(frame)
+
+
     def log(self, frame):
         """
             Обрабатывает новый CAN-фрейм: логирует изменения и обновляет состояние.
@@ -40,10 +44,7 @@ class CANLogger:
             # Сохраняем новый фрейм как последний для этого ID
             self.last_frames[frame.can_id] = frame
 
-            print(
-                f"NEW ID: 0x{frame.can_id:X} "
-                f"DATA: {frame.data.hex(' ')}"
-            )
+            print(f"NEW ID: 0x{frame.can_id:X} " f"DLC={frame.dlc} " f"DATA={frame.data.hex(' ').upper()}")
 
             return  # Выходим, так как изменений нет
 
@@ -105,11 +106,23 @@ class CANLogger:
             for change in changes:
                 # Если изменился байт данных
                 if change["type"] == "byte":
+                    old_value = (
+                        "None"
+                        if change["old"] is None
+                        else f"{change['old']:02X}"
+                    )
+
+                    new_value = (
+                        "None"
+                        if change["new"] is None
+                        else f"{change['new']:02X}"
+                    )
+
                     print(
                         f" byte[{change['index']}]: "
-                        f"{change['old']} -> "
-                        f"{change['new']}"
+                        f"{old_value} -> {new_value}"
                     )
+
 
                 # Если изменился DLC
                 elif change["type"] == "dlc":
@@ -120,3 +133,4 @@ class CANLogger:
                     )
         # обновляем последний кадр
         self.last_frames[frame.can_id] = frame
+
