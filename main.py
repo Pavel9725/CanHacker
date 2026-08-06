@@ -1,12 +1,14 @@
-import time
+import time, sys
 
 from serial_manager import SerialManager
 from can_receiver import CANReceiver
 from can_dispatcher import CANDispatcher
 from can_model import CANModel
 from can_logger import CANLogger
+from PySide6.QtWidgets import QApplication
+from gui.main_window import MainWindow
 
-
+"""
 def select_port(ports):
     print("\nДоступные порты:")
 
@@ -120,5 +122,9 @@ def main():
             print("Ошибка отключения.")
 
 
-if __name__ == "__main__":
-    main()
+"""
+app = QApplication(sys.argv)
+main_window = MainWindow()
+
+main_window.show()
+app.exec()
