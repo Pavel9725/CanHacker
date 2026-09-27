@@ -6,6 +6,13 @@ class CANModel:
         self.rows = {}
 
     def handle_frame(self, frame):
+
+        print(
+            f"MODEL: ID=0x{frame.can_id:X} "
+            f"DLC={frame.dlc} "
+            f"DATA={frame.data.hex(' ').upper()}"
+        )
+
         row = self.rows.get(frame.can_id)
 
         if row is None:
